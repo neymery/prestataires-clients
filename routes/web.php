@@ -14,6 +14,7 @@ use App\Http\Controllers\MessageController;
 
 
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -51,5 +52,32 @@ Route::middleware(['auth'])->post('/avis/{prestataire}', [AvisController::class,
 Route::middleware('auth')->group(function () {
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages/{destinataire}', [MessageController::class, 'envoyer'])->name('messages.envoyer');
+    Route::get('/messages/create/{receiver_id}', [MessageController::class, 'create'])->name('messages.create');
+    Route::post('/messages/repondre', [MessageController::class, 'repondre'])->name('messages.repondre');
+
 });
+
+
+Route::post('/avis', [AvisController::class, 'store'])->name('avis.store')->middleware('auth');
+
+
+
+Route::get('/prestataire/{id}', [ClientController::class, 'showPrestataire'])
+    ->name('client.prestataire.show')
+    ->middleware('auth');
+
  
+
+
+Route::get('/client/dashboard', function () {
+    return view('client.dashboard');
+})->middleware(['auth'])->name('client.dashboard');
+
+Route::get('/prestataire/dashboard', function () {
+    return view('prestataire.dashboard');
+})->middleware(['auth'])->name('prestataire.dashboard');
+
+
+
+
+Route::get('/conversation/{user}', [MessageController::class, 'conversation'])->name('messages.conversation');

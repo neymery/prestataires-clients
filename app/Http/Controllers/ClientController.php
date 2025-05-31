@@ -22,4 +22,14 @@ class ClientController extends Controller
 
         return view('client.home', compact('categories', 'prestataires'));
     }
+
+
+
+    public function showPrestataire($id)
+    {
+        $prestataire = User::where('role', 'prestataire')->with('profil', 'avisRecus.client')->findOrFail($id);
+
+        return view('client.prestataire_show', compact('prestataire'));
+    }
+
 }

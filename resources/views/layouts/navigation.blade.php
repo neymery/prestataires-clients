@@ -12,9 +12,29 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @auth
+                        @if (auth()->user()->role === 'client')
+                            <x-nav-link :href="route('client.dashboard')" :active="request()->routeIs('client.dashboard')">
+                                {{ __('Accueil') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('client.home')" :active="request()->routeIs('client.home')">
+                                {{ __('Catégories') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.index')">
+                                {{ __('Messages') }}
+                            </x-nav-link>
+                        @elseif (auth()->user()->role === 'prestataire')
+                            <x-nav-link :href="route('prestataire.dashboard')" :active="request()->routeIs('prestataire.dashboard')">
+                                {{ __('Accueil') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('prestataire.profil.edit')" :active="request()->routeIs('prestataire.profil.edit')">
+                                {{ __('Mon Profil') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.index')">
+                                {{ __('Messages') }}
+                            </x-nav-link>
+                        @endif
+                    @endauth
                 </div>
             </div>
 

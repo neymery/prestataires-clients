@@ -32,16 +32,30 @@
                             Métier : {{ $prestataire->profilPrestataire->categorie->nom ?? 'N/A' }}<br>
                             Tel : {{ $prestataire->profilPrestataire->telephone ?? 'N/A' }}<br>
                             Disponibilité : 
-                            @if($prestataire->profilPrestataire->disponible)
-                                <span class="badge bg-success">Disponible</span>
-                            @else
-                                <span class="badge bg-danger">Indisponible</span>
-                            @endif
+                            <span class="badge {{ $prestataire->profil->disponible ? 'bg-success' : 'bg-danger' }}">
+                                {{ $prestataire->profil->disponible ? 'Disponible' : 'Indisponible' }}
+                            </span>
                             <br>
                             Note moyenne : ⭐ {{ number_format($prestataire->profilPrestataire->note_moyenne ?? 0, 1) }}/5
                         </p>
+                        <p class="card-text">
+                        Métier : {{ $prestataire->profilPrestataire->categorie->nom ?? 'N/A' }}<br>
+                        Tel : {{ $prestataire->profilPrestataire->telephone ?? 'N/A' }}<br>
+                        Disponibilité : 
+                        <span class="badge {{ $prestataire->profilPrestataire->disponible ? 'bg-success' : 'bg-danger' }}">
+                            {{ $prestataire->profilPrestataire->disponible ? 'Disponible' : 'Indisponible' }}
+                        </span>
+                        <br>
+                        Note moyenne : ⭐ {{ number_format($prestataire->profilPrestataire->note_moyenne ?? 0, 1) }}/5
+                    </p>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('messages.conversation', $prestataire->id) }}" class="btn btn-sm btn-outline-primary">
+                            Voir la conversation
+                        </a>
                         <a href="#" class="btn btn-primary">Contacter</a>
                     </div>
+
+                     </div>
                 </div>
             </div>
 

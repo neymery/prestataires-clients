@@ -34,4 +34,47 @@ class MessageController extends Controller
 
         return back()->with('success', 'Message envoyé.');
     }
+
+    public function create($receiver_id)
+    {
+        $receiver = User::findOrFail($receiver_id);
+        return view('messages.create', compact('receiver'));
+    }
+
+
+
+
+    public function repondre(Request $request)
+    {
+        $request->validate([
+            'destinataire_id' => 'required|exists:users,id',
+            'contenu' => 'required|string|max:1000',
+        ]);
+
+        Message::create([
+            'expediteur_id' => auth()->id(),
+            'destinataire_id' => $request->destinataire_id,
+            'contenu' => $request->contenu,
+        ]);
+
+        return redirect()->back()->with('success', 'Message envoyé avec succès.');
+    }
+
+
+
+    public function conversation(User $user)
+    {
+        $messages = Message::where(function ($query) use ($user) {
+            $query->where('expediteur_id', auth()->id())
+                ->where('destinataire_id', $user->id);
+        })->orWhere(function ($query) use ($user) {
+            $query->where('expediteur_id', $user->id)
+                ->where('destinataire_id', auth()->id());
+        })->orderBy('created_at', 'asc')->get();
+
+        return view('messages.conversation', [
+            'messages' => $messages,
+            'destinataire' => $user
+        ]);
+    }
 }
