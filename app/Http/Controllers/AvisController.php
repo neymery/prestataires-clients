@@ -15,6 +15,7 @@ class AvisController extends Controller
     public function store(Request $request, $prestataireId)
     {
         $request->validate([
+            'prestataire_id' => 'required|exists:users,id',
             'note' => 'required|integer|min:1|max:5',
             'commentaire' => 'nullable|string|max:1000',
         ]);
@@ -29,3 +30,5 @@ class AvisController extends Controller
         return back()->with('success', 'Votre avis a été enregistré.');
     }
 }
+ 
+

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+
 
 class Avis extends Model
 {
@@ -20,5 +22,8 @@ class Avis extends Model
     public function prestataire() {
         return $this->belongsTo(User::class, 'prestataire_id');
     }   
+
+
+    
     
 }
