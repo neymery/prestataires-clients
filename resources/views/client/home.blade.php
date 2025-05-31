@@ -73,6 +73,14 @@
             @endif
 
 
+            <form action="{{ route('messages.envoyer', $prestataire->id) }}" method="POST" class="mt-2">
+                @csrf
+                <textarea name="contenu" class="form-control" rows="2" placeholder="Écrire un message au prestataire..." required></textarea>
+                <button class="btn btn-primary btn-sm mt-1">Envoyer</button>
+            </form>
+
+
+
         @endforeach
     </div>
 </div>

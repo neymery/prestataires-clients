@@ -75,4 +75,16 @@ class User extends Authenticatable
 
 
 
+
+    public function messagesEnvoyes() {
+        return $this->hasMany(Message::class, 'expediteur_id');
+    }
+    
+    public function messagesRecus() {
+        return $this->hasMany(Message::class, 'destinataire_id');
+    }
+    
+
+
+
 }

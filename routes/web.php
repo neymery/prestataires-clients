@@ -6,6 +6,9 @@ use App\Http\Controllers\ProfilPrestataireController;
 use App\Http\Controllers\ProfilClientController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\AvisController;
+use App\Http\Controllers\MessageController;
+
+
 
 
 
@@ -44,4 +47,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 Route::middleware(['auth'])->post('/avis/{prestataire}', [AvisController::class, 'store'])->name('avis.store');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::post('/messages/{destinataire}', [MessageController::class, 'envoyer'])->name('messages.envoyer');
+});
  
