@@ -16,8 +16,9 @@ class ClientController extends Controller
         $categories = Categorie::all();
 
         $prestataires = User::where('role', 'prestataire')
-            ->with('profilPrestataire', 'profilPrestataire.categorie')
-            ->get();
+        ->with(['profilPrestataire.categorie', 'avisRecus.client'])
+        ->get();
+    
 
         return view('client.home', compact('categories', 'prestataires'));
     }

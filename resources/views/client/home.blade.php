@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+
 @section('content')
 <div class="container">
     <h2>Bienvenue {{ Auth::user()->name }}</h2>
@@ -43,6 +44,35 @@
                     </div>
                 </div>
             </div>
+
+            <form action="{{ route('avis.store', $prestataire->id) }}" method="POST" class="mt-2">
+                @csrf
+                <label for="note">Votre note :</label>
+                <select name="note" required>
+                    @for($i = 1; $i <= 5; $i++)
+                        <option value="{{ $i }}">{{ $i }} ⭐</option>
+                    @endfor
+                </select>
+
+                <textarea name="commentaire" class="form-control mt-1" rows="2" placeholder="Votre commentaire..."></textarea>
+                
+                <button class="btn btn-sm btn-success mt-2">Envoyer l'avis</button>
+            </form>
+
+
+            @if($prestataire->avisRecus->count())
+                <div class="mt-3">
+                    <strong>Avis clients :</strong>
+                    @foreach($prestataire->avisRecus as $avis)
+                        <div class="border rounded p-2 mb-1">
+                            ⭐ {{ $avis->note }} – <em>{{ $avis->client->name }}</em><br>
+                            {{ $avis->commentaire }}
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+
         @endforeach
     </div>
 </div>

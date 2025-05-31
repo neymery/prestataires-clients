@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfilPrestataireController;
 use App\Http\Controllers\ProfilClientController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\AvisController;
+
 
 
 
@@ -39,4 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/client/home', [ClientController::class, 'home'])->name('client.home');
 });
 
+
+
+Route::middleware(['auth'])->post('/avis/{prestataire}', [AvisController::class, 'store'])->name('avis.store');
  

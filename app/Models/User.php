@@ -55,11 +55,24 @@ class User extends Authenticatable
 
 
 
-    
+
     public function profilClient()
     {
         return $this->hasOne(ProfilClient::class);
     }
+
+
+
+    // En tant que client
+    public function avisDonnes() {
+        return $this->hasMany(Avis::class, 'client_id');
+    }
+
+    // En tant que prestataire
+    public function avisRecus() {
+        return $this->hasMany(Avis::class, 'prestataire_id');
+    }
+
 
 
 }
