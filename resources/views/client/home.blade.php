@@ -1,17 +1,30 @@
 @extends('layouts.app')
 
-
 @section('content')
 <div class="container">
     <h2>Bienvenue {{ Auth::user()->name }}</h2>
 
+    <div class="mt-4">
+        <form action="{{ route('prestataires.search') }}" method="GET" class="d-flex gap-2">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" name="query" class="form-control" placeholder="Rechercher par nom ou ville...">
+            </div>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </form>
+    </div>
+
     <h4 class="mt-4">Catégories</h4>
-    <div class="row mb-4">
-        @foreach($categories as $categorie)
-            <div class="col-md-2">
+    <div class="row">
+        @foreach($categories as $cat)
+            <div class="col-md-3 mb-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <strong>{{ $categorie->nom }}</strong>
+                        <a href="{{ route('prestataires.categorie', $cat->id) }}" class="text-decoration-none">
+                            <h5 class="card-title">{{ $cat->nom }}</h5>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -21,81 +34,38 @@
     <h4 class="mt-4">Prestataires</h4>
     <div class="row">
         @foreach($prestataires as $prestataire)
-            <div class="col-md-4">
-                <div class="card mb-4">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
                     @if($prestataire->profilPrestataire && $prestataire->profilPrestataire->photo)
                         <img src="{{ asset('storage/' . $prestataire->profilPrestataire->photo) }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($prestataire->name) }}&background=random&size=200" class="card-img-top" style="height: 200px; object-fit: cover;">
                     @endif
                     <div class="card-body">
                         <h5 class="card-title">{{ $prestataire->name }}</h5>
                         <p class="card-text">
-                            Métier : {{ $prestataire->profilPrestataire->categorie->nom ?? 'N/A' }}<br>
-                            Tel : {{ $prestataire->profilPrestataire->telephone ?? 'N/A' }}<br>
+                            Métier : {{ $prestataire->profilPrestataire && $prestataire->profilPrestataire->categorie ? $prestataire->profilPrestataire->categorie->nom : 'N/A' }}<br>
+                            Tel : {{ $prestataire->profilPrestataire ? ($prestataire->profilPrestataire->telephone ?? 'N/A') : 'N/A' }}<br>
                             Disponibilité : 
-                            <span class="badge {{ $prestataire->profil->disponible ? 'bg-success' : 'bg-danger' }}">
-                                {{ $prestataire->profil->disponible ? 'Disponible' : 'Indisponible' }}
+                            <span class="badge {{ $prestataire->profilPrestataire && $prestataire->profilPrestataire->disponible ? 'bg-success' : 'bg-danger' }}">
+                                {{ $prestataire->profilPrestataire && $prestataire->profilPrestataire->disponible ? 'Disponible' : 'Indisponible' }}
                             </span>
                             <br>
-                            Note moyenne : ⭐ {{ number_format($prestataire->profilPrestataire->note_moyenne ?? 0, 1) }}/5
+                            Note moyenne : ⭐ {{ $prestataire->profilPrestataire ? number_format($prestataire->profilPrestataire->note_moyenne ?? 0, 1) : 0 }}/5
                         </p>
-                        <p class="card-text">
-                        Métier : {{ $prestataire->profilPrestataire->categorie->nom ?? 'N/A' }}<br>
-                        Tel : {{ $prestataire->profilPrestataire->telephone ?? 'N/A' }}<br>
-                        Disponibilité : 
-                        <span class="badge {{ $prestataire->profilPrestataire->disponible ? 'bg-success' : 'bg-danger' }}">
-                            {{ $prestataire->profilPrestataire->disponible ? 'Disponible' : 'Indisponible' }}
-                        </span>
-                        <br>
-                        Note moyenne : ⭐ {{ number_format($prestataire->profilPrestataire->note_moyenne ?? 0, 1) }}/5
-                    </p>
-                    <div class="d-flex gap-2">
-                        <a href="{{ route('messages.conversation', $prestataire->id) }}" class="btn btn-sm btn-outline-primary">
-                            Voir la conversation
-                        </a>
-                        <a href="#" class="btn btn-primary">Contacter</a>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('messages.conversation', $prestataire->id) }}" class="btn btn-sm btn-outline-primary">
+                                Voir la conversation
+                            </a>
+                            <a href= "{{ route('messages.create', $prestataire->id) }}"  class="btn btn-primary">Contacter</a>
+                            <a href="{{ route('prestataire.show', $prestataire->id) }}" class="btn btn-primary">Voir plus</a>
+                        </div>
                     </div>
-
-                     </div>
                 </div>
             </div>
-
-            <form action="{{ route('avis.store', $prestataire->id) }}" method="POST" class="mt-2">
-                @csrf
-                <label for="note">Votre note :</label>
-                <select name="note" required>
-                    @for($i = 1; $i <= 5; $i++)
-                        <option value="{{ $i }}">{{ $i }} ⭐</option>
-                    @endfor
-                </select>
-
-                <textarea name="commentaire" class="form-control mt-1" rows="2" placeholder="Votre commentaire..."></textarea>
-                
-                <button class="btn btn-sm btn-success mt-2">Envoyer l'avis</button>
-            </form>
-
-
-            @if($prestataire->avisRecus->count())
-                <div class="mt-3">
-                    <strong>Avis clients :</strong>
-                    @foreach($prestataire->avisRecus as $avis)
-                        <div class="border rounded p-2 mb-1">
-                            ⭐ {{ $avis->note }} – <em>{{ $avis->client->name }}</em><br>
-                            {{ $avis->commentaire }}
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-
-
-            <form action="{{ route('messages.envoyer', $prestataire->id) }}" method="POST" class="mt-2">
-                @csrf
-                <textarea name="contenu" class="form-control" rows="2" placeholder="Écrire un message au prestataire..." required></textarea>
-                <button class="btn btn-primary btn-sm mt-1">Envoyer</button>
-            </form>
-
-
-
         @endforeach
     </div>
+
+
 </div>
 @endsection

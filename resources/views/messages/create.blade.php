@@ -4,11 +4,13 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h2>Envoyer un message à {{ $receiver->name }}</h2>
+            <h2>Envoyer un message à {{ $destinataire->name }}</h2>
         </div>
         <div class="card-body">
-            <form action="{{ route('messages.envoyer', $receiver->id) }}" method="POST">
+            <form action="{{ route('messages.store') }}" method="POST">
                 @csrf
+                
+                <input type="hidden" name="destinataire_id" value="{{ $destinataire->id }}">
                 
                 <div class="mb-3">
                     <label for="contenu" class="form-label">Message :</label>

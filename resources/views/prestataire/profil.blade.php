@@ -33,6 +33,18 @@
         </div>
 
         <div class="mb-3">
+            <label for="ville_id">Ville</label>
+            <select name="ville_id" id="ville_id" class="form-control">
+                <option value="">Sélectionnez une ville</option>
+                @foreach($villes as $ville)
+                    <option value="{{ $ville->id }}" {{ $profil && $profil->ville_id == $ville->id ? 'selected' : '' }}>
+                        {{ $ville->nom }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="mb-3">
             <label for="disponible">Disponible</label>
             <select name="disponible" class="form-control">
                 <option value="1" @if(($profil->disponible ?? 1) == 1) selected @endif>Oui</option>

@@ -10,6 +10,8 @@ class Message extends Model
         'expediteur_id',
         'destinataire_id',
         'contenu',
+        'lu',
+        'conversation_id'
     ];
 
     public function expediteur() {
@@ -20,4 +22,10 @@ class Message extends Model
         return $this->belongsTo(User::class, 'destinataire_id');
     }
     
+    public function conversation() {
+        return $this->belongsTo(Conversation::class);
+    }
+
+   
+
 }

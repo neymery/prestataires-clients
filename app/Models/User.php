@@ -2,33 +2,26 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Attributs autorisés à être remplis via formulaire.
      */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role', // Ajout du rôle ici
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Attributs cachés quand on convertit en tableau ou JSON.
      */
     protected $hidden = [
         'password',
@@ -36,9 +29,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Attributs castés automatiquement.
      */
     protected function casts(): array
     {
@@ -48,53 +39,90 @@ class User extends Authenticatable
         ];
     }
 
-
+    // -------------------------------
+    // Relations
+    // -------------------------------
 
     public function profilPrestataire()
     {
         return $this->hasOne(ProfilPrestataire::class);
     }
 
-
-
-
     public function profilClient()
     {
         return $this->hasOne(ProfilClient::class);
     }
 
-
-
     // En tant que client
-    public function avisDonnes() {
+    public function avisDonnes()
+    {
         return $this->hasMany(Avis::class, 'client_id');
     }
 
     // En tant que prestataire
-    public function avisRecus() {
+    public function avisRecus()
+    {
         return $this->hasMany(Avis::class, 'prestataire_id');
     }
 
-
-
-
-    public function messagesEnvoyes() {
+    public function messagesEnvoyes()
+    {
         return $this->hasMany(Message::class, 'expediteur_id');
     }
-    
-    public function messagesRecus() {
+
+    public function messagesRecus()
+    {
         return $this->hasMany(Message::class, 'destinataire_id');
     }
-
- 
 
     public function avisLaisses()
     {
         return $this->hasMany(Avis::class, 'client_id');
     }
 
-    
+    // -------------------------------
+    // Helpers pour rôle
+    // -------------------------------
 
+    public function hasRole($role)
+    {
+        return $this->roles->contains('name', $role);
+    }
 
+    /**
+     * Get the user's API token.
+     */
+    public function createToken($name, $abilities = ['*'])
+    {
+        return $this->tokens()->create([
+            'name' => $name,
+            'abilities' => $abilities,
+        ]);
+    }
 
+    /**
+     * Delete the user's API token.
+     */
+    public function deleteToken($token)
+    {
+        $this->tokens()->where('token', $token)->delete();
+    }
+
+    /**
+     * Revoke all of the user's tokens.
+     */
+    public function deleteAllTokens()
+    {
+        $this->tokens()->delete();
+    }
+
+    public function estClient()
+    {
+        return $this->hasRole('client');
+    }
+
+    public function estPrestataire()
+    {
+        return $this->hasRole('prestataire');
+    }
 }

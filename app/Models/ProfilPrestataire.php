@@ -13,6 +13,7 @@ class ProfilPrestataire extends Model
         'bio',
         'telephone',
         'disponible',
+        'ville_id'
     ];
 
 
@@ -24,6 +25,11 @@ class ProfilPrestataire extends Model
     public function categorie()
     {
         return $this->belongsTo(Categorie::class);
+    }
+
+    public function ville()
+    {
+        return $this->belongsTo(Ville::class);
     }
 
 }
